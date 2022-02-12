@@ -1,6 +1,13 @@
-from tkinter import X
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
+import sklearn
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
 
 dataset = pd.read_csv("./Iris.csv")
 #drop unecessary
@@ -30,3 +37,47 @@ fig.set_title(" Petal Length VS Width")
 #distribution among columns
 dataset.hist(edgecolor="black", linewidth=1.2)
 plt.show()
+
+plt.figure(figsize=(7,4))
+sns.heatmap(dataset.corr(), annot=True, cmap="cubehelix_r")
+plt.show()
+
+train, test = train_test_split(dataset, test_size=0.3)
+
+train_X = train[['SepalLengthCm','SepalWidthCm','PetalLengthCm','PetalWidthCm']]# taking the training data features
+train_y=train.Species# output of our training data
+test_X= test[['SepalLengthCm','SepalWidthCm','PetalLengthCm','PetalWidthCm']] # taking test data features
+test_y =test.Species   #output value of test data
+
+#SVM
+
+model = svm.SVC()
+model.fit(train_X, train_y)
+
+prediction = model.predict(test_X)
+print('The accuracy of the SVM is:',metrics.accuracy_score(prediction,test_y))
+
+
+#Logistic regression
+
+model = LogisticRegression()
+model.fit(train_X, train_y)
+prediction = model.predict(test_X)
+print('The accuracy of the Logistic regression is:',metrics.accuracy_score(prediction,test_y))
+
+#Decission tree
+
+model=DecisionTreeClassifier()
+model.fit(train_X,train_y)
+prediction=model.predict(test_X)
+print('The accuracy of the Decision Tree is',metrics.accuracy_score(prediction,test_y))
+
+#KNN
+
+model=KNeighborsClassifier(n_neighbors=3) 
+model.fit(train_X,train_y)
+prediction=model.predict(test_X)
+print('The accuracy of the KNN is',metrics.accuracy_score(prediction,test_y))
+
+
+
